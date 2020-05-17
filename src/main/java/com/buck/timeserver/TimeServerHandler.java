@@ -2,6 +2,7 @@ package com.buck.timeserver;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -24,18 +25,6 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
         ByteBuf buf = (ByteBuf)msg;
         byte[] req = new byte[buf.readableBytes()];
         buf.readBytes(req);
-
-        ctx.channel().eventLoop().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10*1000);
-                    System.out.println("我是taskQueue");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
         ctx.channel().eventLoop().schedule(new Runnable() {
             @Override
             public void run() {
@@ -51,7 +40,7 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
         currentTime = currentTime + System.getProperty("line.separator");
         ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
-        ctx.writeAndFlush(resp);
+        ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
