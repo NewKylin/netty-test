@@ -11,6 +11,12 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @create: 2020-03-16 22:15
  **/
 public class MyServerHandler extends ChannelInboundHandlerAdapter {
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        super.channelRead(ctx, msg);
+    }
+
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 
